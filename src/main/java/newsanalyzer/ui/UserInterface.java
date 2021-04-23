@@ -4,18 +4,40 @@ package newsanalyzer.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 
 import newsanalyzer.ctrl.Controller;
+import newsanalyzer.ctrl.NewsAnalyzerException;
+import newsapi.NewsApi;
+import newsapi.NewsApiBuilder;
+import newsapi.enums.Category;
+import newsapi.enums.Country;
+import newsapi.enums.Endpoint;
 
 public class UserInterface 
 {
-
+	private static final String APIKEY = "dfb6219a48b745668b0d4577a5057be8";
 	private Controller ctrl = new Controller();
 
 	public void getDataFromCtrl1(){
 		System.out.println("ABC");
 
-		ctrl.process();
+		NewsApi news = new NewsApiBuilder()
+				.setApiKey(APIKEY)
+				.setQ("corona")
+				.setEndPoint(Endpoint.TOP_HEADLINES)
+				.setSourceCountry(Country.at)
+				.setSourceCategory(Category.health)
+				.createNewsApi();
+		try {
+			ctrl.process(news);
+		} catch (MalformedURLException e) {
+			System.out.println("URL ist nicht korrekt");
+		} catch (NewsAnalyzerException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void getDataFromCtrl2(){
