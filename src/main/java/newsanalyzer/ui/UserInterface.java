@@ -5,11 +5,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import newsanalyzer.ctrl.Controller;
 import newsanalyzer.ctrl.NewsAnalyzerException;
 import newsapi.NewsApi;
 import newsapi.NewsApiBuilder;
+import newsapi.beans.Article;
 import newsapi.enums.Category;
 import newsapi.enums.Country;
 import newsapi.enums.Endpoint;
@@ -20,11 +25,57 @@ public class UserInterface
 	private Controller ctrl = new Controller();
 
 	public void getDataFromCtrl1(){
-		System.out.println("ABC");
+		System.out.println("Business");
 
 		NewsApi news = new NewsApiBuilder()
 				.setApiKey(APIKEY)
-				.setQ("corona")
+				.setQ("")
+				.setEndPoint(Endpoint.TOP_HEADLINES)
+				.setSourceCountry(Country.at)
+				.setSourceCategory(Category.business)
+				.createNewsApi();
+		try {
+			ctrl.process(news);
+		} catch (MalformedURLException e) {
+			System.out.println("URL ist nicht korrekt");
+		} catch (NewsAnalyzerException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch(NoSuchElementException e) {
+			System.out.println("Kein Element gefunden.");
+		}
+
+	}
+
+
+	public void getDataFromCtrl2(){
+		System.out.println("Entertainment");
+
+		NewsApi news = new NewsApiBuilder()
+				.setApiKey(APIKEY)
+				.setQ("")
+				.setEndPoint(Endpoint.TOP_HEADLINES)
+				.setSourceCountry(Country.at)
+				.setSourceCategory(Category.entertainment)
+				.createNewsApi();
+		try {
+			ctrl.process(news);
+		} catch (MalformedURLException e) {
+			System.out.println("URL ist nicht korrekt");
+		} catch (NewsAnalyzerException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getDataFromCtrl3(){
+		System.out.println("Health");
+
+		NewsApi news = new NewsApiBuilder()
+				.setApiKey(APIKEY)
+				.setQ("")
 				.setEndPoint(Endpoint.TOP_HEADLINES)
 				.setSourceCountry(Country.at)
 				.setSourceCategory(Category.health)
@@ -38,12 +89,6 @@ public class UserInterface
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void getDataFromCtrl2(){
-	}
-
-	public void getDataFromCtrl3(){
 
 	}
 	
@@ -55,9 +100,9 @@ public class UserInterface
 	public void start() {
 		Menu<Runnable> menu = new Menu<>("User Interfacx");
 		menu.setTitel("Wählen Sie aus:");
-		menu.insert("a", "Choice ABC", this::getDataFromCtrl1);
-		menu.insert("b", "Choice DEF", this::getDataFromCtrl2);
-		menu.insert("c", "Choice 3", this::getDataFromCtrl3);
+		menu.insert("a", "Business", this::getDataFromCtrl1);
+		menu.insert("b", "Entertainment", this::getDataFromCtrl2);
+		menu.insert("c", "Health", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
@@ -99,4 +144,5 @@ public class UserInterface
 		}
 		return number;
 	}
+
 }
