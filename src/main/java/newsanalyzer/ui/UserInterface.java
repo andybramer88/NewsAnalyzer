@@ -91,9 +91,28 @@ public class UserInterface
 		}
 
 	}
+
+	private void getDataFromCtrl4(){
+		System.out.println("Download last search");
+
+		NewsApi news = new NewsApiBuilder()
+				.setApiKey(Controller.APIKEY)
+				.setQ("")
+				.setEndPoint(Endpoint.TOP_HEADLINES)
+				.createNewsApi();
+		try{
+			ctrl.downloadUrlToList(news);
+		} catch (NewsAnalyzerException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println("IO Exception");
+		}
+	}
+
 	
 	public void getDataForCustomInput() {
-		
+		System.out.println("Input: ");
+		String read = readLine();
 	}
 
 
@@ -103,7 +122,8 @@ public class UserInterface
 		menu.insert("a", "Business", this::getDataFromCtrl1);
 		menu.insert("b", "Entertainment", this::getDataFromCtrl2);
 		menu.insert("c", "Health", this::getDataFromCtrl3);
-		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
+		menu.insert("z", "Download", this::getDataFromCtrl4);		// Downloadfunktion
+		menu.insert("d", "Choice User Input:",this::getDataForCustomInput);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {
@@ -113,7 +133,8 @@ public class UserInterface
 	}
 
 
-    protected String readLine() {
+
+	protected String readLine() {
 		String value = "\0";
 		BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
 		try {

@@ -3,8 +3,11 @@ package newsanalyzer.ctrl;
 import newsapi.NewsApi;
 import newsapi.beans.Article;
 import newsapi.beans.NewsReponse;
+import newsreader.downloader.SequentialDownloader;
 
 import java.io.IOException;
+import java.lang.management.GarbageCollectorMXBean;
+import java.security.cert.CollectionCertStoreParameters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,5 +87,21 @@ public class Controller {
 	public Object getData() {
 
 		return null;
+	}
+
+	public void downloadUrlToList(NewsApi news) throws IOException, NewsAnalyzerException {
+		NewsReponse newsReponse = news.getNews();
+
+		if(newsReponse != null){
+			List<Article> articles = newsReponse.getArticles();
+
+			var urls = articles
+					.stream()
+					.map(Article::getUrl)
+					.filter(Objects::nonNull)
+					.collect(Collectors.toList());
+			SequentialDownloader sequentialDownloader = new SequentialDownloader();
+			sequentialDownloader.process(urls);
+		}
 	}
 }
